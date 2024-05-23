@@ -1,0 +1,8 @@
+2024-05-23 09:50:04,552 mycat [INFO] MyloggerTest3.cc test1 24The log is info message
+2024-05-23 09:50:04,552 mycat [ERROR] MyloggerTest3.cc test1 25The log is error message
+2024-05-23 09:50:04,552 mycat [WARN] MyloggerTest3.cc test1 26The log is warn message
+2024-05-23 09:50:04,552 mycat [DEBUG] MyloggerTest3.cc test1 27The log is debug message
+2024-05-23 10:19:11,246 mycat [INFO] [MyloggerTest3.cc:test1:25]The log is info message
+2024-05-23 10:19:11,246 mycat [ERROR] [MyloggerTest3.cc:test1:26]The log is error message
+2024-05-23 10:19:11,246 mycat [WARN] [MyloggerTest3.cc:test1:27]The log is warn message
+2024-05-23 10:19:11,246 mycat [DEBUG] [MyloggerTest3.cc:test1:28]The log is debug message

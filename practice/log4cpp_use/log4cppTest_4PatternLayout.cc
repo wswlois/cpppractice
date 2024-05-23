@@ -1,0 +1,115 @@
+#include <iostream>
+#include "log4cpp/OstreamAppender.hh"
+#include <log4cpp/PatternLayout.hh>
+#include "log4cpp/Category.hh"
+#include "log4cpp/Priority.hh"
+#include "log4cpp/Appender.hh"
+#include "log4cpp/FileAppender.hh"
+#include "log4cpp/Layout.hh"
+#include "log4cpp/BasicLayout.hh"
+#include "log4cpp/RollingFileAppender.hh"
+
+using std::cout;
+using std::endl;
+using std::ofstream;
+using namespace log4cpp;
+
+int main(int argc, char** argv) {
+    //1.设置日志的布局(格式化器)
+    PatternLayout *ptn1 = new PatternLayout();
+    ptn1->setConversionPattern("%d %c [%p] %m%n");
+
+    PatternLayout *ptn2 = new PatternLayout();
+    ptn2->setConversionPattern("%d %c [%p] %m%n");
+
+    //基类指针指向派生类对象的写法
+    //OstreamAppender的构造函数第一个参数代表输出目的地名
+    //随便写，一般是提示的信息
+    //第二个参数是ostream *
+	//Appender *appender1 = new OstreamAppender("console", &std::cout);
+    //让输出器和格式化器绑定（设置布局）—— 采用了基本布局
+	//appender1->setLayout(new BasicLayout());
+
+    //2.创建日志的目的地对象
+    /* ofstream ofs("res.log"); */
+    /* OstreamAppender *pos = new OstreamAppender("file",&ofs); */
+    OstreamAppender *pos = new OstreamAppender("console",&cout);
+    /* auto *pos = new OstreamAppender("console",&cout); */
+    pos->setLayout(ptn1);
+
+    FileAppender * pfile = new FileAppender("fileApp","wd.log");
+    pfile->setLayout(ptn2);
+
+    //创建了第二个输出器，让文件作为目的地
+    //第一个参数随便写，第二个参数是日志保存的文件名
+	//Appender *appender2 = new FileAppender("default", "program.log");
+    //让第二个输出器和格式化器绑定（设置布局）—— 采用了基本布局
+    //这里使用的是BasicLayout.hh那个的输出，
+    //到时候可以把这个头文件删除
+    //，然后自己使用新的自己设计的时间从1970年1月1日的
+	//appender2->setLayout(new BasicLayout());
+
+    //3.Catagory的种类(创建日志记录器)(核心)
+    Category &salesDepart = Category::getInstance("salesDepart");
+    /* Category &salesDepart = Category::getRoot().getInstance("salesDepart"); */
+    //3.1过滤器（设置日志系统优先级）
+    salesDepart.setPriority(Priority::WARN);
+    //3.2设置日志目的地绑定
+    salesDepart.addAppender(pos);
+
+    //创建日志记录器(日志来源)
+	//Category& root = Category::getRoot();
+
+    //4.过滤器(设置日志系统优先级)
+    //设置日志过滤器（日志系统的优先级）
+    //如果日志的优先级高于或等于系统优先级，才保存日志
+	//root.setPriority(Priority::WARN);
+    //日志记录器与输出器进行绑定,root的日志输出到终端
+	//root.addAppender(appender1);
+
+    //创建了Root下一级的叶子结点（Categor对象sub1）
+	//Category& sub1 = Category::getInstance("sub1");
+	//sub1.addAppender(appender2);
+    //如果想再创建sub1的子节点sub11就是
+	//Category& sub11 = Category::getInstance("sub1.sub11");
+    //前面的sub1表示的是下面过滤设置的
+    //后面的sub1表示的是错误消息中前面显示sub1
+	//Category& sub1 = Category::getInstance("sub1");
+	//sub1.addAppender(pos);
+    //让子节点独立生成记录信息，不再继承父节点
+    //sub1.setAppender(appender2);
+    //sub1.setAdditivity(false);//不再从父节点继承appender
+    //5.记录日志
+    salesDepart.emerg("this is an emerge message");
+    salesDepart.fatal("this is an fatal message");
+    salesDepart.alert("this is an alert message");
+    salesDepart.crit("this is an crit message");
+    salesDepart.error("this is an error message");
+    salesDepart.warn("this is an warn message");
+    salesDepart.notice("this is an notice message");
+    /* root.alert("this is an alert message"); */
+    /* root.alert("this is an alert message"); */
+
+	// use of functions for logging messages
+	//root.error("root error");
+	//root.info("root info");
+	//sub1.error("sub1 error");
+	//sub1.warn("sub1 warn");
+
+	// printf-style for logging variables
+	//root.warn("%d + %d == %s ?", 1, 1, "two");
+
+	// use of streams for logging messages
+	//root << log4cpp::Priority::ERROR << "Streamed root error";
+	//root << log4cpp::Priority::INFO << "Streamed root info";
+	//sub1 << log4cpp::Priority::ERROR << "Streamed sub1 error";
+	//sub1 << log4cpp::Priority::WARN << "Streamed sub1 warn";
+
+	// or this way:
+	//root.errorStream() << "Another streamed error";
+
+    //回收内存
+    Category::shutdown();
+	return 0;
+}
+
