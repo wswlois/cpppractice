@@ -4,15 +4,12 @@
 #include <sstream>
 #include <stdio.h>
 using namespace std;
-#define OUT_IN_REPEATE_NUM 10000
+#define OUT_IN_REPEATE_NUM 100000
 #define IN_REPEATE_NUM 60
  
 string s1="abcedfg";
 string s2="hijklmn";
 string s3="opqrst";
-string s4="opqrst";
-string s5="opqrst";
-string s6="opqrst";
 void  plusTest(string& ret)
 {//+=方法拼接
     for(int i=0; i<IN_REPEATE_NUM; i++)
@@ -20,21 +17,23 @@ void  plusTest(string& ret)
         ret += s1;
         ret += s2;
         ret += s3;
-        ret += s4;
-        ret += s5;
-        ret += s6;
     }
 }
+//void  plusTest(string& ret)
+//{//+方法拼接
+//    for(int i=0; i<IN_REPEATE_NUM; i++)
+//    {
+//        ret = ret + s1 + s2 + s3;
+//    }
+//}
 void  appendTest(string& ret)
 {//append()方法拼接
     for(int i=0; i<IN_REPEATE_NUM; i++)
     {
+        //ret.append(s1).append(s2).append(s3);
         ret.append(s1);
         ret.append(s2);
         ret.append(s3);
-        ret.append(s4);
-        ret.append(s5);
-        ret.append(s6);
     }
 }
 void sprintfTest(string& ret)
@@ -42,10 +41,10 @@ void sprintfTest(string& ret)
     const size_t length=26*IN_REPEATE_NUM;
     char tmp[length];
     char* cp = tmp;
-    size_t strLength=s1.length()+s2.length()+s3.length()+s4.length()+s5.length() +s6.length();
+    size_t strLength=s1.length()+s2.length()+s3.length();
     for(int i=0; i<IN_REPEATE_NUM; i++)
     {
-        sprintf(cp,"%s%s%s%s%s%s", s1.c_str(), s2.c_str(),s3.c_str(),s4.c_str(),s5.c_str(),s6.c_str());
+        sprintf(cp,"%s%s%s", s1.c_str(), s2.c_str(),s3.c_str());
         cp+=strLength;
     }
     ret = tmp;
@@ -56,7 +55,7 @@ void  ssTest(string& ret)
     stringstream ss;
     for(int i=0; i<IN_REPEATE_NUM; i++)
     {
-        ss<<s1 << s2 <<s3 << s4 << s5 << s6;
+        ss<<s1<<s2<<s3;
     }
     ret = ss.str();
 }

@@ -15,6 +15,7 @@ using std::vector;
 using std::cerr;
 using std::ofstream;
 using std::regex;
+using std::regex_replace;
 
 
 struct RssItem
@@ -44,7 +45,7 @@ RssReader::RssReader()
 void RssReader::parseRss()
 {
     XMLDocument doc;
-    //regex r();
+    regex htmlTag("<.*?>");
     RssItem rssItem;
     doc.LoadFile( "../data/coolshell.xml" );
     if(doc.ErrorID())
@@ -73,13 +74,15 @@ void RssReader::parseRss()
         }
 
         if(descriptionElement){
-            rssItem.description = descriptionElement->GetText();
+            string description = regex_replace(descriptionElement->GetText(), htmlTag, "");
+            rssItem.description = description;
         }else{
              rssItem.description = "";
         }
 
         if(contentElement){
-            rssItem.content = contentElement->GetText();
+            string content = regex_replace(contentElement->GetText(), htmlTag, "");
+            rssItem.content = content;
         }else{
             continue;
         }
@@ -101,8 +104,10 @@ void RssReader::dump(const string & filename)
     int docNumber = 0;
     for(auto &ri: _rss){
         ++docNumber;
-        ofs << "<doc>\n\t<docid>" << docNumber << "</docid>\n\t<title>" <<ri.title
-            << "</title>\n\t<link>" << ri.link << "</link>\n\t<description>"
+        ofs << "<doc>\n\t<docid>" 
+            << docNumber << "</docid>\n\t<title>" 
+            <<ri.title << "</title>\n\t<link>" 
+            << ri.link << "</link>\n\t<description>"
             << ri.description << "</description>\n\t<content>"
             << ri.content << "</content>\n</doc>\n";
 
@@ -115,7 +120,7 @@ int main(int argc, char **argv)
 {
     RssReader RR;
     RR.parseRss();
-    RR.dump("../data/out/pagelib.txt");
+    RR.dump("../data/pagelib.txt");
     return 0;
 }
 
