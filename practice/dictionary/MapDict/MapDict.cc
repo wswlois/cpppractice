@@ -8,23 +8,27 @@ using namespace std;
 class Dictionary
 {
 public:
-    void read(const string &filename){
+    void read(const string &filename)
+    {
         ifstream ifs(filename);    
 
         if(!ifs){
-            cerr << "ifstream open file failed!" << endl;
+            cerr << "ifs open "<< filename <<" failed!" << endl;
             return;
         }
 
         string line;
-        while(getline(ifs,line)){
+        while(getline(ifs,line))
+        {
             istringstream iss(line);
             string word;
-            while(iss >> word){
+            while(iss >> word)
+            {
                 //处理单词
                 string newWord = dealWord(word);
 
-                if(newWord != string()){
+                if(newWord != string())
+                {
                     //将处理后的单词尝试插入到map中
                     ++_dict[newWord];
                 }
@@ -32,15 +36,6 @@ public:
         }
 
         ifs.close();
-    }
-
-    string dealWord(const string & word){
-        for(size_t idx = 0; idx != word.size(); ++idx){
-            if(!isalpha(word[idx])){
-                return string();
-            }
-        }
-        return word;
     }
 
 
@@ -59,13 +54,31 @@ public:
         ofs.close();
     }
 private:
+    string dealWord(const string & word){
+        for(size_t idx = 0; idx != word.size(); ++idx)
+        {
+            if(!isalpha(word[idx]))
+            {
+                return string();
+            }
+        }
+        return word;
+    }
+private:
     map<string,int> _dict;
 };
 
 void test0(){
+
+    cout << "before reading..." << endl;
     Dictionary dict;
+    time_t beg = time(NULL);
     dict.read("The_Holy_Bible.txt");
+    time_t end = time(NULL);
+    cout << "time: " << (end - beg) << "s" << endl;
+    cout << "aftre reading..." << endl;
     dict.store("dictMap.dat");
+
 }
 
 int main(void){
