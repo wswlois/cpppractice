@@ -1,4 +1,0 @@
-2024-05-23 09:49:42,831 mycat [INFO] MyloggerTest3.cc test1 24The log is info message
-2024-05-23 09:49:42,831 mycat [ERROR] MyloggerTest3.cc test1 25The log is error message
-2024-05-23 09:49:42,831 mycat [WARN] MyloggerTest3.cc test1 26The log is warn message
-2024-05-23 09:49:42,831 mycat [DEBUG] MyloggerTest3.cc test1 27The log is debug message
