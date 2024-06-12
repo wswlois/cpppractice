@@ -35,13 +35,14 @@ unordered_map<string,string> buildMap(ifstream &map_file)
     string key;//要转换的单词
     string value;//替换后的内容
     //左边一行的第一个单词 右边储存剩下的内容
-    while(map_file >> key && getline(map_file,value))
+    while(map_file >> key , getline(map_file,value))
+    //while(map_file >> key && getline(map_file,value))
     {
         if(value.size() > 1)
             trans_map[key] = value.substr(1);//跳过前面空格？？
-        else
-            //仅抛出异常，一般这个這样不会输出吧
-            throw runtime_error("no rule for " + key);
+        //else
+        //    //仅抛出异常，一般这个這样不会输出吧
+        //    throw runtime_error("no rule for " + key);
     }
     return trans_map;
 }
