@@ -10,13 +10,17 @@ using std::endl;
 
 EventLoop::EventLoop(Acceptor &acceptor)
 : _epfd(createEpollFd())
-, _evtList()
+, _evtList(1)
 , _isLooping(false)
 , _acceptor(acceptor)
 , _evtfd(createEventFd())
 , _mutex()
 {
     _evtList.reserve(1024);
+#ifdef DEBUG
+    cout << _evtList.size()<<endl;
+    cout <<"capacity" << _evtList.capacity()<<endl;
+#endif
     //监听listenfd
     int listenfd = _acceptor.fd();
     addEpollReadFd(listenfd);
@@ -54,13 +58,13 @@ void EventLoop::waitEpollFd()
         //第二个是struct结构体，
         //先从vector<struct epoll_event>_evtList的开始取出第一个元素(就是*)
         //然后再使用&取地址得到的就是首地址,vector的size就是epoll_event最大元素个数
-        nready = epoll_wait(_epfd, &*_evtList.begin(), _evtList.size(), 3000);
+        nready = epoll_wait(_epfd, &*_evtList.begin(), _evtList.capacity(), 10000);
     //这里使用dowhile代替了原来的continue跳过这次循环
     }while(-1 == nready && errno == EINTR);
 
     if(-1 == nready)
     {
-        std::cerror << "-1 == nready" << endl;
+        std::cerr << "-1 == nready" << endl;
         return;
     }
     else if(0 == nready)
@@ -72,10 +76,14 @@ void EventLoop::waitEpollFd()
     {
         //需要考虑vector存不下满足条件的文件描述符
         //所以需要扩容vector
-        if((int)_evtList.size() == nready)
+        if((int)_evtList.capacity() <= nready)
         {
-            _evtList.resize(2 * nready);
+            _evtList.reserve(2 * nready);
         }
+#ifdef DEBUG
+    cout << _evtList.size()<<endl;
+    cout <<"capacity" << _evtList.capacity()<<endl;
+#endif
 
         for(int idx = 0; idx < nready; ++idx)
         {
@@ -90,6 +98,7 @@ void EventLoop::waitEpollFd()
             {
                 handleRead();
                 //此处的"任务"只是线程池处理之后的msg吗？
+                //打包的除了数据还有_conn连接
                 doPengdingFunctors();//执行所有的"任务"
             }
             else
