@@ -12,6 +12,9 @@ ThreadPool *gPool = nullptr;
 class MyTask
 {
 public:
+    //注意必须要用const &左值引用，不能用右值
+    //必须要拷贝，如果使用std::move会导致这个函数直接被移走
+    //导致后续新的连接进来的时候进入空指针
     MyTask(const string &msg, const TcpConnectionPtr &con)
     : _msg(msg)
     , _con(con)
