@@ -51,7 +51,6 @@ void EventLoop::waitEpollFd()
     do
     {
         nready = epoll_wait(_epfd, &*_evtList.begin(), _evtList.size(), 3000);
-    //这里使用dowhile代替了原来的continue跳过这次循环
     }while(-1 == nready && errno == EINTR);
 
     if(-1 == nready)
@@ -260,6 +259,7 @@ void EventLoop::doPengdingFunctors()
 
     for(auto &cb : tmp)
     {
+        //bind(&TcpConnection::send, TcpConnection, msg)
         cb();//到底在做什么东西
     }
 }

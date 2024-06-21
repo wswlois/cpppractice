@@ -55,12 +55,8 @@ void onClose(const TcpConnectionPtr &con)
 
 void test()
 {
-    // 先建立线程池，里面阻塞在了任务部分，内部没有任务
-    // 4个thread都在sleep
     ThreadPool pool(4, 10);
     pool.start();
-
-    //全局的线程，因为在MyTask里面需要用
     gPool = &pool;
 
     TcpServer server("127.0.0.1", 8888);
