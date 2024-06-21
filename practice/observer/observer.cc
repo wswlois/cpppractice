@@ -120,6 +120,7 @@ void test()
 {
     //using namespace std::chrono_literals;
     //std::this_thread::sleep_for(1s);
+    //std::this_thread::sleep_for(std::chrono::seconds(1));
     unique_ptr<ConcreteSubject> pSubject(new ConcreteSubject());
     unique_ptr<Observer> pObserver(new ConcreteObserver("lili"));
     unique_ptr<Observer> pObserver2(new ConcreteObserver2("lucy"));
