@@ -30,7 +30,7 @@ int main()
         perror("socket error");
         exit(-1);
     }
-
+    //按照我们的设计一般使用地址复用就可以,不需要端口复用
     //2、地址复用
     int opt = 1;
     setsockopt(listenfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
@@ -64,7 +64,7 @@ int main()
     printf("server is listening...\n");
 
     //6、epoll类型IO多路复用
-    //创建红黑树的根节点（使用数据结构：红黑树 + 就绪链表）
+    //创建红黑树的根节点（使用数据结构：红黑树 + 就绪链表(线性表)）
     epfd = epoll_create(OPEN_MAX);
     if(-1 == epfd)
     {
@@ -74,6 +74,8 @@ int main()
     }
 
     //对应结构体evt赋值，目的是放在红黑树上进行监听
+    //这里可以进行|
+    //比如evet.events = EPOLLIN | EPOLLET就是设置为读就绪+边缘触发
     evt.events = EPOLLIN;
     evt.data.fd = listenfd;
     /* evt.data.ptr = ; */
