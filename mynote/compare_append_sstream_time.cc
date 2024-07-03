@@ -30,10 +30,10 @@ void  appendTest(string& ret)
 {//append()方法拼接
     for(int i=0; i<IN_REPEATE_NUM; i++)
     {
-        //ret.append(s1).append(s2).append(s3);
-        ret.append(s1);
-        ret.append(s2);
-        ret.append(s3);
+        ret.append(s1).append(s2).append(s3);
+        //ret.append(s1);
+        //ret.append(s2);
+        //ret.append(s3);
     }
 }
 void sprintfTest(string& ret)
@@ -41,6 +41,7 @@ void sprintfTest(string& ret)
     const size_t length=26*IN_REPEATE_NUM;
     char tmp[length];
     char* cp = tmp;
+    //size_t strLength=20;
     size_t strLength=s1.length()+s2.length()+s3.length();
     for(int i=0; i<IN_REPEATE_NUM; i++)
     {
