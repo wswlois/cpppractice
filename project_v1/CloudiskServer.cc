@@ -9,6 +9,9 @@
 
 #include <iostream>
 
+//对于盐值随机生成
+#include <ctime>    // 包含 time() 
+
 using namespace wfrest;
 using std::string;
 using std::cout;
@@ -40,18 +43,22 @@ void CloudiskServer::loadModules()
 
 void CloudiskServer::loadStaticResourceModule()
 {
+    //注册，成功会回下一个页面的链接
     _httpserver.GET("/user/signup", [](const HttpReq *, HttpResp * resp){
         resp->File("static/view/signup.html");
     });
+    //登录
     _httpserver.GET("/static/view/signin.html", [](const HttpReq *, HttpResp * resp){
         resp->File("static/view/signin.html");
     });
+    //
     _httpserver.GET("/static/view/home.html", [](const HttpReq *, HttpResp * resp){
         resp->File("static/view/home.html");
     });
     _httpserver.GET("/static/js/auth.js", [](const HttpReq *, HttpResp * resp){
         resp->File("static/js/auth.js");
     });
+    //得到头像
     _httpserver.GET("/static/img/avatar.jpeg", [](const HttpReq *, HttpResp * resp){
         resp->File("static/img/avatar.jpeg");
     });
@@ -73,6 +80,16 @@ void CloudiskServer::loadUserRegisterModule()
             cout << "password:" << password << endl;
             //2. 对密码进行加密
             string salt("12345678");//这里应该是随机生成
+    //         string salt;
+    //         [&salt](){// 初始化随机数种子  
+    // srand((unsigned)time(NULL));  
+  
+    // // 生成一个7位数  
+    // // 注意：rand() % 9000000 生成的是0到8999999之间的数，我们需要加1来得到1到9999999之间的数  
+    // // 但由于我们需要的是7位数（包括前导0的情况），所以我们实际上应该从0到9000000中取数，然后加1000000  
+    // // 但为了简化，我们可以直接这样做：rand() % 9000000 + 1000000，这样其实包括了1000000到9999999  
+    // salt = rand() % 9000000 + 1000000; };
+    // cout <<"salt:" <<salt<<endl;
             string encodedPassword(crypt(password.c_str(), salt.c_str()));
             cout << "mi wen:" << encodedPassword << endl;
             //将用户信息存储到数据库MySQL中
@@ -151,7 +168,7 @@ void CloudiskServer::loadUserLoginModule()
                 if(cursor.get_cursor_status() == MYSQL_STATUS_OK) {
                     //2. 成功写入数据库了
                     printf("Query OK. %llu row affected.\n",cursor.get_affected_rows());
-                    resp->String("Login Failed");   
+                    resp->String("Login Failed");
                 } else if(cursor.get_cursor_status() == MYSQL_STATUS_GET_RESULT){
                     //3. 读取数据
                     vector<vector<MySQLCell>> matrix;
@@ -172,12 +189,15 @@ void CloudiskServer::loadUserLoginModule()
                         msg["data"] = data;
                         resp->String(msg.dump());//序列化之后，发送给客户端
 
+                        cout <<"username:::::::::::"<<username<<"\n";
+                        cout <<"tokenStr:::::::::::"<<tokenStr<<"\n";
                         //3.3 将Token保存到数据库中
                         auto nextTask = WFTaskFactory::create_mysql_task(mysqlurl, 1, nullptr);
                         string sql("REPLACE INTO cloudisk.tbl_user_token(user_name, user_token)VALUES('");
                         sql += username + "', '" + tokenStr + "')";
                         nextTask->get_req()->set_query(sql);
                         series->push_back(nextTask);
+                        std::cerr <<"11111111111111111111111111111111111";
                         
                     } else {
                         //登录失败的情况
@@ -332,7 +352,7 @@ void CloudiskServer::loadFileDownloadModule(){
         
         //将下载业务从服务器中分离出去，之后只需要产生一个下载链接就可以了
         //这要求我们还需要去部署一个下载服务器
-        string downloadURL = "http://192.168.72.128:8080/" + filename;
+        string downloadURL = "http://192.168.2.25:8080/" + filename;
         resp->String(downloadURL);
     });
 }
