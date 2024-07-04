@@ -25,8 +25,8 @@ using std::vector;
 //新增的OSSInfo
 struct OSSInfo{
     string endPoint = "oss-cn-wuhan-lr.aliyuncs.com";
-    string accessKeyID = "LTAI5tJ7sShnpSkUBoaAxFCE";
-    string accessKeySecret = "59IVld80u2ox5uReHrFgEyBezSJm3l";
+    string accessKeyID = "";
+    string accessKeySecret = "";
     string bucket = "56wsw01-test";
 
 };
